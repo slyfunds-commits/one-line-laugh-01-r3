@@ -42,6 +42,14 @@ def main() -> None:
     assert 1 <= len(LINE) <= 200, f"line is {len(LINE)} chars"
     assert LINE.count(".") == 1 and LINE.endswith("."), "must be one sentence"
     assert LINE.strip() == LINE and LINE, "no stray whitespace"
+    # Reversal test, enforced in code: the line must not explain its own
+    # joke (R2's flaw: "which is exactly why I'm leaving"). No tell-phrase
+    # may appear; the reader must complete the last step.
+    for tell in ("which is exactly", "which is why", "that's why",
+                 "because that's", "in other words", "get it"):
+        assert tell not in LINE.lower(), f"explains itself: {tell!r}"
+    # The last word must be the reframe-trigger ("me" = the day he asks).
+    assert LINE.rstrip(".").rsplit(" ", 1)[-1] == "me", "last word is not the trigger"
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(LINE + "\n")
